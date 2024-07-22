@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Resumes</title>
+    {% load static %}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            background: url({% static "bg.jpg" %}) no-repeat;
+            background-position: center;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 400px;
+            height:600px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border-radius: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            padding: 20px;
+        }
+
+        h2 {
+            color: #fff;
+            font-size: 2em;
+            text-transform: uppercase;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .form-group {
+            position: relative;
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.2em;
+            background-color: transparent;
+            border: none;
+            border-bottom: 3px solid #fff;
+            outline: none;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .form-group input[type="file"] {
+            padding: 0;
+        }
+
+        .form-group label {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 1.2em;
+            color: #fff;
+            pointer-events: none;
+            transition: 0.5s;
+        }
+
+        .form-group input:focus ~ label,
+        .form-group input:not(:placeholder-shown) ~ label,
+        .form-group select:focus ~ label,
+        .form-group select:not([value=""]) ~ label,
+        .form-group textarea:focus ~ label,
+        .form-group textarea:not(:placeholder-shown) ~ label {
+            top: -20px;
+            left: 0;
+            font-size: 1em;
+            color: #fff;
+        }
+
+        #btn {
+            width: 100%;
+            height: 50px;
+            border-radius: 40px;
+            border: none;
+            font-size: 1.5em;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.5s;
+            background-color: rgba(255, 255, 255, 0.7);
+            color: #000;
+        }
+
+        #btn:hover {
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+        }
+
+        .result {
+            color: #fff;
+            font-size: 1.2em;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .result a {
+            color: #00f;
+            text-decoration: none;
+        }
+
+        .result a:hover {
+            text-decoration: underline;
+        }
+
+
+        .topright {
+            position: absolute;
+            top: 8px;
+            right: 16px;
+            font-size: 18px;
+        }
+
+        .dot {
+             height: 25px;
+             width: 25px;
+             background-color: #bbb;
+             border-radius: 50%;
+             display: inline-block;
+        }
+
+        .header-left {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-left img {
+            width: 80px; /* Increased size */
+            height: 80px; /* Increased size */
+            border-radius: 50%;
+        }
+
+        .header-right {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .user-icon {
+            width: 40px; /* Adjust size as needed */
+            height: 40px; /* Adjust size as needed */
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        .user-name {
+            color: #fff;
+            font-size: 0.9em;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+<body>
+    <div class="header-left">
+    <a href="{% url 'Home' %}"> <img src="{% static "logo.png" %}" alt="Logo"> </a>
+    </div>
+    
+    <div class="header-right">
+        <div class="user-icon">
+            <i class="fa-solid fa-user"></i> <!-- User icon from Font Awesome -->
+        </div>
+        <div class="user-name">
+            <p>{{user.first_name}}</p>
+            <p><a href="{%url 'logout' %}"> log out</a></p>
+        </div>
+    </div>
+{% if user.is_authenticated %}
+<div class="container">
+    <h2>Upload Resumes</h2>
+    <form action="#" method=POST enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+        <textarea id="name" name="job" >
+        </textarea>
+        <label for="enter job description">Enter job description</label>
+        </div>
+        <div class="form-group">
+            <input type="radio" id="html" name="shortlisting" value="emails" required>
+            <label for="emails">Candidates contact</label>
+        </div>
+        <div class="form-group"><input type="radio" id="css" name="shortlisting" value="files">
+            <label for="files">Candidates Resume</label>
+        </div>
+        
+            
+        <div class="form-group">
+            <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx"  multiple required>
+            <label for="resume">Upload Resume </label>
+        </div>
+    
+        <button type="submit" id="btn">Submit</button>
+    </form>
+
+    <!-- <div class="result" id="result">{{ message }}</div> -->
+    
+    <a href="{% url 'create_and_download_file' %}" id="result"><b>Shortlisted Candidates</b></a> 
+   
+    {% else %}
+    <a href="{%url 'login' %}" class="button"> LOG IN</a>
+    <a href="{%url 'register' %}" class="button" > register</a>
+    {% endif %}
+   
+</div> 
+
+{% load static %}
+<script src="{% static 'myfirst.js' %}"></script>       
+
+</body>
+</html>
+
