@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Resumes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+        {% load static %}
+        body {
+            width: 100vw;
+            height: 100vh;
+            background: url({% static "bg.jpg" %}) no-repeat;
+            background-position: center;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 400px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border-radius: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            padding: 20px;
+        }
+
+        h2 {
+            color: #fff;
+            font-size: 2em;
+            text-transform: uppercase;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .form-group {
+            position: relative;
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.2em;
+            background-color: transparent;
+            border: none;
+            border-bottom: 3px solid #fff;
+            outline: none;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .form-group input[type="file"] {
+            padding: 0;
+        }
+
+        .form-group label {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 1.2em;
+            color: #fff;
+            pointer-events: none;
+            transition: 0.5s;
+        }
+
+        .form-group input:focus ~ label,
+        .form-group input:not(:placeholder-shown) ~ label,
+        .form-group select:focus ~ label,
+        .form-group select:not([value=""]) ~ label,
+        .form-group textarea:focus ~ label,
+        .form-group textarea:not(:placeholder-shown) ~ label {
+            top: -20px;
+            left: 0;
+            font-size: 1em;
+            color: #fff;
+        }
+
+        #btn {
+            width: 100%;
+            height: 50px;
+            border-radius: 40px;
+            border: none;
+            font-size: 1.5em;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.5s;
+            background-color: rgba(255, 255, 255, 0.7);
+            color: #000;
+        }
+
+        #btn:hover {
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+        }
+
+        .result {
+            color: #fff;
+            font-size: 1.2em;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .result a {
+            color: #00f;
+            text-decoration: none;
+        }
+
+        .result a:hover {
+            text-decoration: underline;
+        }
+
+
+        .topright {
+            position: absolute;
+            top: 8px;
+            right: 16px;
+            font-size: 18px;
+        }
+
+        .dot {
+             height: 25px;
+             width: 25px;
+             background-color: #bbb;
+             border-radius: 50%;
+             display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Upload Resumes</h2>
+    <form action="#" method=POST enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+        <textarea id="name" name="job" >
+        </textarea>
+        <label for="enter job description">Enter job description</label>
+        </div>
+        <div class="form-group">
+            <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required>
+            <label for="resume">Upload Resume </label>
+        </div>
+    
+        <button type="submit" id="btn">Submit</button>
+    </form>
+    <div class="result" id="result">{{ message }}</div>
+
+</div>
+
+<div class="user">
+    {% if user.is_authenticated %}
+        
+        <div class="topright"><span class="dot"></span> <br>{{user.first_name}}</div>
+    {% else %}
+        <div class="topright"><span class="dot"></span> <br><a href="{%url 'login' %}"> LOG IN</a></div>
+    {% endif %}
+</div>
+               
+
+
+<script>
+    document.getElementById('resume-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const formData = new FormData(this);
+        const resumes = ["resume1", "resume2", "resume3"];
+        let bestMatch = { resume: null, score: 0 };
+
+        // Dummy function to simulate resume matching
+        const matchResume = (file) => {
+            // Simulate resume score (in reality, this would be replaced with actual parsing and matching logic)
+            return Math.random();
+        };
+
+        resumes.forEach((resume) => {
+            if (formData.get(resume)) {
+                const file = formData.get(resume);
+                const score = matchResume(file);
+                if (score > bestMatch.score) {
+                    bestMatch = { resume: file, score: score };
+                }
+            }
+        });
+
+        const resultDiv = document.getElementById('result');
+        if (bestMatch.resume) {
+            const url = URL.createObjectURL(bestMatch.resume);
+            resultDiv.innerHTML = `Best matching resume: <a href="${url}" download>Download here</a>`;
+        } else {
+            resultDiv.innerText = "No resumes were uploaded.";
+        }
+
+        alert('Resumes submitted successfully!');
+    });
+</script>
+
+</body>
+</html>
+
