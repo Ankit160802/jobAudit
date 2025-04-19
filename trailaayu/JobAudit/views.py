@@ -47,9 +47,7 @@ def activate(request,uidb64,token):
     return redirect('Home')
 
     return redirect('Home')
-def index(request):
-    return HttpResponse("bye")
-    #return render(request,'index.html')
+
 
 def activateEmail(request,user,to_email):
     mail_subject="activate your account"
@@ -60,6 +58,11 @@ def activateEmail(request,user,to_email):
         messages.success(request,"please visit your email id for confirmation mail")
     else:
         messages.error(request,'check again')
+
+
+def index(request):
+    return HttpResponse("bye")
+    #return render(request,'index.html')
 
 
 
@@ -155,9 +158,6 @@ def resumechecker(request):
         return render(request,"resumecheck.html",{'message':result})
     else:
         return render(request,'resumecheck.html',{})
-
-
-
 
 
 def create_and_download_file(request):
